@@ -5,12 +5,12 @@
   "version": "1.0.0",
   "authors": [
     {
-      "name": "Ivan",
-      "url": "https://github.com/kenpoh01"
+      "name": "kenpoh",
+      "url": ""
     }
   ],
   "compatibility": {
-    "minimum": "12",
+    "minimum": "14",
     "verified": "14"
   },
   "esmodules": [
