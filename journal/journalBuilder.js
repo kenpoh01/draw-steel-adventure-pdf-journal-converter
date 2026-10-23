@@ -126,6 +126,15 @@ export class JournalBuilder {
           journalPages.push({
             name: pageTitle,
             type: "text",
+
+            // Heading level 1-6: Foundry indents the page list by it, so
+            // nested bookmarks appear nested.
+            title: {
+              show: true,
+              level: Number.isInteger(page.level)
+                ? Math.min(6, Math.max(1, page.level))
+                : 1
+            },
             text: {
               content: this.textToHtml(cleanedText),
               format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML

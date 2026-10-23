@@ -82,6 +82,7 @@ export class StoryExtractor {
         cleanedText: overviewText,
         content: overviewText,
         depth: 0,
+        level: 1,
         parentTitle: null,
         source: "chapter-overview",
         heading: group.heading,
@@ -110,6 +111,10 @@ export class StoryExtractor {
           cleanedText: content,
           content,
           depth: header.depth,
+
+          // Indent in the journal's page list: 1 for the overview, then one
+          // level for each bookmark level below the chapter's own bookmark.
+          level: this.pageLevel(header, group.heading),
           parentTitle: header.parentTitle ?? null,
           source: header.source ?? "bookmark",
           heading: header
@@ -178,7 +183,53 @@ export class StoryExtractor {
   // Bookmark normalization
   // ---------------------------------------------------------------------------
 
+  /**
+   * A nested bookmark must point at or after the page of the bookmark it is
+   * nested under. One that points earlier has a broken destination (it would
+   * land in the wrong chapter), so it is skipped with a warning.
+   */
+  dropMisplacedBookmarks(headers) {
+    const parentPage = [];
+    const kept = [];
+
+    // Parents are found in bookmark order, which the headers may not be in.
+    const inOrder = headers
+      .map((header, index) => ({ header, index }))
+      .sort(
+        (a, b) =>
+          (a.header?.bookmarkOrder ?? a.index) - (b.header?.bookmarkOrder ?? b.index)
+      )
+      .map(entry => entry.header);
+
+    for (const header of inOrder) {
+      const depth = Number.isInteger(header?.depth) ? header.depth : 0;
+      const pageNumber = Number(header?.pageNumber);
+      const parent = depth > 0 ? parentPage[depth - 1] : undefined;
+
+      if (
+        parent !== undefined &&
+        Number.isInteger(pageNumber) &&
+        pageNumber < parent
+      ) {
+        console.warn(
+          `${MODULE_ID} | Skipping bookmark "${header.title}": it points to ` +
+          `PDF page ${pageNumber}, before the section it is nested in ` +
+          `(page ${parent}).`
+        );
+        continue;
+      }
+
+      parentPage[depth] = pageNumber;
+      parentPage.length = depth + 1;
+      kept.push(header);
+    }
+
+    return kept;
+  }
+
   normalizeHeaders(headers, pages) {
+    headers = this.dropMisplacedBookmarks(headers);
+
     const pageMap = new Map(
       pages.map(page => [page.pageNumber, page])
     );
@@ -401,17 +452,38 @@ export class StoryExtractor {
    * becomes a journal entry, and every bookmark nested beneath it becomes a
    * page of that entry. Bookmark titles are never inspected.
    */
+  /**
+   * Foundry indents a journal's pages by their heading level (1 to 6).
+   */
+  pageLevel(header, chapterHeading) {
+    const level = (header.depth ?? 0) - (chapterHeading.depth ?? 0) + 1;
+    return Math.min(6, Math.max(2, level));
+  }
+
   groupHeadersIntoChapters(headers) {
-    const topDepth = headers.reduce(
-      (min, header) => Math.min(min, header.depth ?? 0),
+    const depthOf = header => header.depth ?? 0;
+
+    // Chapters are the outermost bookmarks. When the whole outline hangs
+    // under a single bookmark (the book's title), that bookmark is not a
+    // chapter: step down a level, keeping it as an entry of its own so the
+    // text before the first real chapter is not lost.
+    let chapterDepth = headers.reduce(
+      (min, header) => Math.min(min, depthOf(header)),
       Infinity
     );
+
+    while (
+      headers.filter(header => depthOf(header) === chapterDepth).length === 1 &&
+      headers.some(header => depthOf(header) > chapterDepth)
+    ) {
+      chapterDepth++;
+    }
 
     const chapters = [];
     let currentChapter = null;
 
     for (const header of headers) {
-      if ((header.depth ?? 0) === topDepth) {
+      if (depthOf(header) <= chapterDepth || !currentChapter) {
         currentChapter = {
           id: this.createChapterId(header, chapters.length),
           heading: header,
