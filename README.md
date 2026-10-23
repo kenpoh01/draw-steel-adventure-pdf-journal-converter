@@ -9,4 +9,4 @@ This FoundryVTT v14 module converts Draw Steel adventure PDFs into structured Jo
 
 ## 
 
-Use this url to manually download: https://github.com/kenpoh01/draw-steel-adventure-pdf-journal-converter/releases/download/v0.0.1/module.zip
+Use this url to manually download: https://raw.githubusercontent.com/kenpoh01/draw-steel-monster-importer/refs/heads/main/module.json
