@@ -21,7 +21,7 @@
   ],
   "packs": [],
   "languages": [],
-  "url": "https://github.com/kenpoh01/draw-steel-adventure-pdf-journal-converter",
-  "manifest": "https://raw.githubusercontent.com/kenpoh01/draw-steel-adventure-pdf-journal-converter/main/module.json",
-  "download": "https://github.com/kenpoh01/draw-steel-adventure-pdf-journal-converter/archive/refs/heads/main.zip"
+  "url": "https://github.com/kenpoh01/draw-steel-adventure-pdf-journal-converter ",
+  "manifest": "https://raw.githubusercontent.com/kenpoh01/draw-steel-adventure-pdf-journal-converter/refs/heads/main/module.json",
+  "download": "https://github.com/kenpoh01/draw-steel-adventure-pdf-journal-converter/releases/download/v0.0.1/module.zip"
 }
