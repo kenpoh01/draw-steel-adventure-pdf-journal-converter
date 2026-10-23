@@ -8,5 +8,5 @@ This FoundryVTT v14 module converts Draw Steel adventure PDFs into structured Jo
 * Story-only extraction (no stat blocks)
 
 ## 
-
+This module needs to be manually installed from the FoundryVTT module installation tab.
 Use this url to manually download: https://raw.githubusercontent.com/kenpoh01/draw-steel-monster-importer/refs/heads/main/module.json
