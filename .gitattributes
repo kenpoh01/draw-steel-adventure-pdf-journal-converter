@@ -1,2 +1,13 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Store text as LF in the repository and check it out as LF everywhere.
+* text=auto eol=lf
+
+# Never touch binary files.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.zip binary
+packs/** binary
