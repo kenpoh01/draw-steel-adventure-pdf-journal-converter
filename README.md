@@ -15,6 +15,8 @@ This FoundryVTT v14 module converts Draw Steel adventure PDFs into structured Jo
 This module needs to be manually installed from the FoundryVTT module installation tab.
 Use this url to manually download: https://raw.githubusercontent.com/kenpoh01/draw-steel-monster-importer/refs/heads/main/module.json
 
+If this has been useful, please consider buying me a kofi: https://ko-fi.com/kenpoh
+
 
 https://github.com/user-attachments/assets/3e1178b2-b302-47e0-a26c-81f88b5019ac
 
